@@ -1,0 +1,53 @@
+package com.example.demo.controller;
+
+import com.example.demo.errorhandler.ResourceNotFound;
+import com.example.demo.model.Cat;
+import com.example.demo.repository.CatRepository;
+import com.example.demo.service.CatService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.math.BigInteger;
+import java.util.List;
+
+
+@RestController
+public class CatController {
+
+    private final CatService catService;
+
+    @Autowired
+    public CatController(CatService catService) {
+        this.catService = catService;
+    }
+
+    @PostMapping("/create")
+    @ResponseBody
+    public Cat createCat(@RequestBody Cat cat) {
+        return catService.createCat(cat);
+    }
+
+    @GetMapping("/getAllCats")
+    @ResponseBody
+    public List<Cat> getAllCats () {
+        return catService.findAllCats();
+    }
+
+    @GetMapping("/getCatByName/{catName}")
+    @ResponseBody
+    public Cat getCatByName(@PathVariable (value = "catName") String catName) {
+        return catService.getCatByName(catName);
+    }
+
+    @PatchMapping("/updateCatById/{catId}")
+    @ResponseBody
+    public Cat updateCatById(@PathVariable (value = "catId") BigInteger catId, @RequestBody Cat cat) {
+        return catService.updateCatById(catId, cat);
+    }
+
+    @DeleteMapping("/deleteCatById/{catId}")
+    public void deleteCatById(@PathVariable (value = "catId") BigInteger catId) {
+        catService.deleteCatById(catId);
+    }
+
+}
