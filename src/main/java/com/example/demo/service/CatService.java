@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -51,5 +52,13 @@ public class CatService {
     public void deleteCatById(BigInteger catId) {
         Cat catToBeDeleted = catRepository.findCatBy_id(catId).orElseThrow(() -> new ResourceNotFound("Cat doesn't exist"));
         catRepository.delete(catToBeDeleted);
+    }
+
+    public void publishMessage(Cat cat) {
+        cat.setName(cat.getName());
+        cat.setWeightInKilograms(cat.getWeightInKilograms());
+        cat.setAgeInYears(cat.getAgeInYears());
+        cat.setCreationDate(new Date());
+        catRepository.save(cat);
     }
 }

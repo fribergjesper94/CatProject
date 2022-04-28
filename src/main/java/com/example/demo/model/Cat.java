@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigInteger;
+import java.util.Date;
 
 @Document("cat")
 @Data
@@ -21,4 +22,5 @@ public class Cat {
     private String name;
     private int ageInYears;
     private double weightInKilograms;
+    private Date creationDate;
 }

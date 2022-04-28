@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.errorhandler.ResourceNotFound;
 import com.example.demo.model.Cat;
-import com.example.demo.repository.CatRepository;
+import com.example.demo.rabbitmq.RabbitMQConfig;
 import com.example.demo.service.CatService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +15,12 @@ import java.util.List;
 public class CatController {
 
     private final CatService catService;
+    private final RabbitTemplate rabbitTemplate;
 
     @Autowired
-    public CatController(CatService catService) {
+    public CatController(CatService catService, RabbitTemplate rabbitTemplate) {
         this.catService = catService;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @PostMapping("/create")
@@ -50,4 +52,14 @@ public class CatController {
         catService.deleteCatById(catId);
     }
 
+
+    @PostMapping("/publish")
+    public String publishMessage (@RequestBody Cat cat) {
+        catService.publishMessage(cat);
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.TOPIC_EXCHANGE,
+                RabbitMQConfig.ROUTING_KEY,
+                cat);
+        return "Message published";
+    }
 }
